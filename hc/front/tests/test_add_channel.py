@@ -38,4 +38,10 @@ class AddChannelTestCase(BaseTestCase):
             self.assertContains(r, "Integration Settings", status_code=200)
 
     ### Test that the team access works
-    ### Test that bad kinds don't work
+    def test_bad_kinds(self):
+        """Test bad kinds don't works"""
+
+        self.client.login(username="alice@example.org", password="password")
+        url = "/integrations/add_messenger/"
+        r = self.client.get(url)
+        self.assertEqual(r.status_code, 404)
