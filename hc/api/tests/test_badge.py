@@ -27,4 +27,4 @@ class BadgeTestCase(BaseTestCase):
         self.assertEquals(r.status_code, 200)
 
         # assert svg is returned in response
-        self.assertIn(str(r), "image/svg+xml")
+        self.assertIn("image/svg+xml", str(r))
