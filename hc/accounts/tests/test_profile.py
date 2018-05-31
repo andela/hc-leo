@@ -3,6 +3,7 @@ from django.core import mail
 from hc.test import BaseTestCase
 from hc.accounts.models import Member
 from hc.api.models import Check
+from django.conf import settings
 
 
 class ProfileTestCase(BaseTestCase):
@@ -17,9 +18,15 @@ class ProfileTestCase(BaseTestCase):
         # profile.token should be set now
         self.alice.profile.refresh_from_db()
         token = self.alice.profile.token
+
+        self.assertTrue(len(token) > 10)
+
         ### Assert that the token is set
+        self.assertEqual(r.status_code, 302)
 
         ### Assert that the email was sent and check email content
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertIn("Here's a link to set a password for your account on {}:".format(settings.SITE_NAME), mail.outbox[0].body)
 
     def test_it_sends_report(self):
         check = Check(name="Test Check", user=self.alice)
@@ -28,6 +35,8 @@ class ProfileTestCase(BaseTestCase):
         self.alice.profile.send_report()
 
         ###Assert that the email was sent and check email content
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertIn("This is a monthly report sent by {}.".format(settings.SITE_NAME), mail.outbox[0].body)
 
     def test_it_adds_team_member(self):
         self.client.login(username="alice@example.org", password="password")
@@ -45,6 +54,8 @@ class ProfileTestCase(BaseTestCase):
         self.assertTrue("frank@example.org" in member_emails)
 
         ###Assert that the email was sent and check email content
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertIn("You will be able to manage their existing monitoring checks and set up new\nones.", mail.outbox[0].body)
 
     def test_add_team_member_checks_team_access_allowed_flag(self):
         self.client.login(username="charlie@example.org", password="password")
@@ -108,3 +119,22 @@ class ProfileTestCase(BaseTestCase):
         self.assertNotContains(r, "bobs-tag.svg")
 
     ### Test it creates and revokes API key
+
+    def test_it_creates_api_key(self):
+        self.client.login(username="alice@example.org", password="password")
+
+        form = {"create_api_key": "1"}
+        response = self.client.post("/accounts/profile/", form)
+
+        # Test it creates API key
+        self.assertContains(response, 'The API key has been created!')
+
+    def test_it_revokes_api_key(self):
+        self.client.login(username="alice@example.org", password="password")
+
+        form = {"revoke_api_key": "1"}
+
+        response = self.client.post("/accounts/profile/", form)
+        # Test it revokes API key
+        self.assertContains(response, "The API key has been revoked!")
+
