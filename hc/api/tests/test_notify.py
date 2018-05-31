@@ -222,7 +222,6 @@ class NotifyTestCase(BaseTestCase):
         json = kwargs["json"]
         self.assertEqual(json["message_type"], "CRITICAL")
 
-    ### Test that the web hooks handle connection errors and error 500s
     @patch("hc.api.transports.requests.request")
     def test_webhook_handles_error_500(self, mock_hook):
         self._setup_data("webhook", "http://test_url")

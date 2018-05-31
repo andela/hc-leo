@@ -21,7 +21,6 @@ class SendAlertsTestCase(BaseTestCase):
             check.save()
 
         result = Command().handle_many()
-        ### Assert when Command's handle many that when handle_many should return True
         self.assertEqual(result, True)
 
         handled_names = []
@@ -29,7 +28,6 @@ class SendAlertsTestCase(BaseTestCase):
             handled_names.append(args[0].name)
 
         self.assertEqual(set(names), set(handled_names))
-        ### The above assert fails. Make it pass
 
     def test_it_handles_grace_period(self):
         check = Check(user=self.alice, status="up")

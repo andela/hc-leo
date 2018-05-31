@@ -27,7 +27,6 @@ class PauseTestCase(BaseTestCase):
 
         self.assertEqual(r.status_code, 400)
 
-    ### Test that it only allows post requests
     def test_it_only_allows_post_requests(self):
         check = Check(user=self.bob, status="up")
         check.save()
