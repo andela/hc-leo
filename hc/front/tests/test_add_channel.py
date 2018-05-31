@@ -37,11 +37,14 @@ class AddChannelTestCase(BaseTestCase):
             r = self.client.get(url)
             self.assertContains(r, "Integration Settings", status_code=200)
 
-    ### Test that the team access works
     def test_bad_kinds(self):
         """Test bad kinds don't works"""
 
         self.client.login(username="alice@example.org", password="password")
-        url = "/integrations/add_messenger/"
-        r = self.client.get(url)
-        self.assertEqual(r.status_code, 404)
+        url = "/integrations/add/"
+        r = self.client.post(url, {"kind": "facebook",})
+
+        self.assertEqual(r.status_code, 400)
+
+        count = Channel.objects.filter(value='facebook')
+        self.assertEqual(count.count(), 0)
