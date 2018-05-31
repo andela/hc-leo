@@ -10,7 +10,7 @@ jobs:
         environment:
           POSTGRES_USER: root
           POSTGRES_DB: test_hc
-    working_directory: ~/hc-leo/hc
+    working_directory: ~/hc-leo
 
     steps:
       - checkout
