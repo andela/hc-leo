@@ -54,7 +54,7 @@ class AddChannelTestCase(BaseTestCase):
 
         self.client.login(username="alice@example.org", password="password")
         url = "/integrations/add/"
-        r = self.client.post(url, {"kind": "facebook",})
+        r = self.client.post(url, {"kind": "facebook"})
 
         self.assertEqual(r.status_code, 400)
 
