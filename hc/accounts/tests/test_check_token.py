@@ -21,8 +21,16 @@ class CheckTokenTestCase(BaseTestCase):
         self.profile.refresh_from_db()
         self.assertEqual(self.profile.token, "")
 
-    ### Login and test it redirects already logged in
+        # Login and test it redirects already logged in
+        self.assertEqual(r.status_code, 302)
 
-    ### Login with a bad token and check that it redirects
+        # Login with a bad token and check that it redirects
 
-    ### Any other tests?
+    def test_login_bad_token_redirects(self):
+        # import ipdb;
+        # ipdb.set_trace()
+        r = self.client.post(
+            "/accounts/check_token/michael/secret-token/")
+        self.assertEqual(r.status_code, 302)
+
+        # Any other tests?

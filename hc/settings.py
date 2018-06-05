@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/1.8/ref/settings/
 
 import os
 import warnings
+import dj_database_url
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -49,6 +50,7 @@ MIDDLEWARE = (
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'hc.accounts.middleware.TeamAccessMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
 )
 
 AUTHENTICATION_BACKENDS = (
@@ -110,6 +112,9 @@ if os.environ.get("DB") == "mysql":
         }
     }
 
+if os.environ.get("TRIGGER") == 'TRUE':
+    DATABASES['default'] = dj_database_url.config()
+
 LANGUAGE_CODE = 'en-us'
 
 TIME_ZONE = 'UTC'
@@ -121,6 +126,7 @@ USE_L10N = True
 USE_TZ = True
 
 SITE_ROOT = "http://localhost:8000"
+SITE_NAME = "healthchecks.io"
 PING_ENDPOINT = SITE_ROOT + "/ping/"
 PING_EMAIL_DOMAIN = HOST
 STATIC_URL = '/static/'
@@ -133,7 +139,15 @@ STATICFILES_FINDERS = (
 )
 COMPRESS_OFFLINE = True
 
+# Email Configurations
 EMAIL_BACKEND = "djmail.backends.default.EmailBackend"
+DJMAIL_REAL_BACKEND = 'djmail.backends.async.EmailBackend'
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = os.environ.get("DJMAIL_EMAIL")
+EMAIL_HOST_PASSWORD = os.environ.get("DJMAIL_PASSWORD")
+EMAIL_USE_TLS = True
 
 # Slack integration -- override these in local_settings
 SLACK_CLIENT_ID = None
