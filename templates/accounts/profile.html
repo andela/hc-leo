@@ -24,14 +24,36 @@
             <div class="panel-body settings-block">
                 <form method="post">
                     {% csrf_token %}
-                    <h2>Monthly Reports</h2>
-                    <label>
+                    <h2>Email Reports</h2>
+                    <label class="radiobtn">
                         <input
-                            name="reports_allowed"
-                            type="checkbox"
-                            {% if profile.reports_allowed %} checked {% endif %}>
-                        Each month send me a summary of my checks
+                            name="report_period"
+                            value="0"
+                            type="radio">
+                        Do not send report
                     </label>
+                    <label class="radiobtn">
+                        <input
+                            name="report_period"
+                            value="1"
+                            type="radio">
+                        Send Daily Reports
+                    </label>
+                    <label class="radiobtn">
+                        <input
+                            name="report_period"
+                            value="7"
+                            type="radio">
+                        Send Weekly Reports
+                    </label>
+                    <label class="radiobtn">
+                        <input
+                            name="report_period"
+                            value="30"
+                            type="radio">
+                        Send Monthly Reports
+                    </label>
+
                     <button
                         name="update_reports_allowed"
                         type="submit"
@@ -56,7 +78,9 @@
             </div>
         </div>
     </div>
+</div>
 
+<div class="row">
     <div class="col-sm-6">
         <div class="panel panel-default">
             <div class="panel-body settings-block">
