@@ -53,6 +53,9 @@ class AddChannelTestCase(BaseTestCase):
         """Test bad kinds don't works"""
 
         self.client.login(username="alice@example.org", password="password")
+        url = "/integrations/add_messenger/"
+        r = self.client.get(url)
+        self.assertEqual(r.status_code, 404)
         url = "/integrations/add/"
         r = self.client.post(url, {"kind": "facebook"})
 
@@ -60,6 +63,3 @@ class AddChannelTestCase(BaseTestCase):
 
         count = Channel.objects.filter(value='facebook')
         self.assertEqual(count.count(), 0)
-        url = "/integrations/add_messenger/"
-        r = self.client.get(url)
-        self.assertEqual(r.status_code, 404)
