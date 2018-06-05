@@ -8,5 +8,5 @@ static-collected
 .DS_Store
 static/.DS_Store
 
-.pytest_cache
+.pytest_cache/
 .env
