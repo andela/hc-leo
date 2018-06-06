@@ -31,7 +31,6 @@ class CheckTokenTestCase(BaseTestCase):
         # ipdb.set_trace()
         r = self.client.post(
             "/accounts/check_token/michael/secret-token/")
-        print("dfghj", r.status_code)
         self.assertEqual(r.status_code, 302)
 
         # Any other tests?
