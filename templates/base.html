@@ -77,6 +77,14 @@
                         <a href="{% url 'hc-checks' %}">Checks</a>
                     </li>
 
+                    <li {% if page == 'unresolved' %} class="active" {% endif %}>
+                        <a href="{% url 'hc-unresolved' %}">Unresolved
+                        {% if checks %}
+                        <span class="badge badge-danger">{{ num_checks }}</span>
+                        {% endif %}
+                        </a>
+                    </li>
+
                     <li {% if page == 'channels' %} class="active" {% endif %}>
                         <a href="{% url 'hc-channels' %}">Integrations</a>
                     </li>
