@@ -44,8 +44,8 @@ mccabe==0.6.1
 more-itertools==4.1.0
 pluggy==0.6.0
 premailer==2.9.6
-psycopg2==2.7.4
-psycopg2-binary==2.7.4
+psycopg2==2.7.3.2
+psycopg2-binary==2.7.3.2
 py==1.5.3
 pycparser==2.18
 PyJWT==1.6.1
@@ -61,7 +61,6 @@ lxml==4.2.1
 mock==2.0.0
 pbr==4.0.3
 premailer==2.9.6
-psycopg2==2.7.3.2
 rcssmin==1.0.6
 requests==2.9.1
 rjsmin==1.0.12
