@@ -69,15 +69,12 @@ def unresolved(request):
     down_tags = set()
     failing_checks = [check for check in checks if check.get_status() == "down"]
     for check in failing_checks:
-        status = check.get_status()
         for tag in check.tags_list():
             if tag == "":
                 continue
 
             counter[tag] += 1
-
-            if status == "down":
-                down_tags.add(tag)
+            down_tags.add(tag)
 
     ctx = {
         "page": "unresolved",
