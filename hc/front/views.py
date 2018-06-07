@@ -70,9 +70,6 @@ def get_failing_checks(request):
 
 @login_required
 def unresolved(request):
-    # q = Check.objects.filter(user=request.team.user).order_by("created")
-    # checks = list(q)
-    #
     counter = Counter()
     down_tags = set()
     failing_checks = get_failing_checks(request)[0]
