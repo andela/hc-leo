@@ -161,7 +161,7 @@ def profile(request):
                 profile.reports_allowed = is_reports_allowed
                 profile.reports_period = checked_report_period
                 profile.save()
-                if is_reports_allowed and checked_report_period == 1:
+                if is_reports_allowed and checked_report_period == 0:
                     profile.send_report()
                 messages.success(request, "Your settings have been updated !")
         elif "invite_team_member" in request.POST:
