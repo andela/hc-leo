@@ -157,8 +157,10 @@ def profile(request):
             form = ReportSettingsForm(request.POST)
             if form.is_valid():
                 profile.reports_allowed = form.cleaned_data["reports_allowed"]
+                profile.reports_period = form.cleaned_data["report_period"]
                 profile.save()
-                messages.success(request, "Your settings have been updated!")
+                profile.send_report()
+                messages.success(request, "Your settings have been updated !")
         elif "invite_team_member" in request.POST:
             if not profile.team_access_allowed:
                 return HttpResponseForbidden()
