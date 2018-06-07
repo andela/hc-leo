@@ -77,10 +77,11 @@
                         <a href="{% url 'hc-checks' %}">Checks</a>
                     </li>
 
-                    <li {% if page == 'unresolved' %} class="active" {% endif %}>
+                    <li  {% if page == 'unresolved' %} class="active" {% endif %}>
                         <a href="{% url 'hc-unresolved' %}">Unresolved
-                        {% if checks %}
-                        <span class="badge badge-danger">{{ num_checks }}</span>
+                        {% if not failing_count %}
+                        {% else %}
+                        <span class="badge badge-danger">{{ failing_count }}</span>
                         {% endif %}
                         </a>
                     </li>
