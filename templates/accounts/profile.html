@@ -24,14 +24,47 @@
             <div class="panel-body settings-block">
                 <form method="post">
                     {% csrf_token %}
-                    <h2>Monthly Reports</h2>
+                    <h2>Periodic reports</h2>
                     <label>
                         <input
                             name="reports_allowed"
                             type="checkbox"
                             {% if profile.reports_allowed %} checked {% endif %}>
-                        Each month send me a summary of my checks
+                        Send me a summary of my checks:
                     </label>
+                    
+                    <div class="radio">
+                        <label>
+                            <input type="radio" name="report_period" value="0"
+                            {% if profile.reports_period == 0 %} checked
+                            {% endif %}>
+                            Now
+                        </label>
+                    </div>
+                    <div class="radio">
+                        <label>
+                            <input type="radio" name="report_period" value="1"
+                            {% if profile.reports_period == 1 %} checked
+                            {% endif %}>
+                            Daily
+                        </label>
+                    </div>
+                    <div class="radio">
+                        <label>
+                            <input type="radio" name="report_period" value="7"
+                            {% if profile.reports_period == 7 %} checked
+                            {% endif %}>
+                            weekly
+                        </label>
+                    </div>
+                    <div class="radio">
+                        <label>
+                            <input type="radio" name="report_period" value="30"
+                            {% if profile.reports_period == 30 %} checked
+                            {% endif %}>
+                            Monthly
+                        </label>
+                    </div>
                     <button
                         name="update_reports_allowed"
                         type="submit"
@@ -56,7 +89,9 @@
             </div>
         </div>
     </div>
+</div>
 
+<div class="row">
     <div class="col-sm-6">
         <div class="panel panel-default">
             <div class="panel-body settings-block">
