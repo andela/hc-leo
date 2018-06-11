@@ -22,6 +22,7 @@ STATUSES = (
 
 DEFAULT_TIMEOUT = td(days=1)
 DEFAULT_GRACE = td(hours=1)
+DEFAULT_NAGGING_INTERVAL = td(hours=1)
 CHANNEL_KINDS = (("email", "Email"), ("webhook", "Webhook"),
                  ("hipchat", "HipChat"),
                  ("slack", "Slack"), ("pd", "PagerDuty"), ("po", "Pushover"),
@@ -52,6 +53,7 @@ class Check(models.Model):
     n_pings = models.IntegerField(default=0)
     last_ping = models.DateTimeField(null=True, blank=True)
     alert_after = models.DateTimeField(null=True, blank=True, editable=False)
+    nagging_interval = models.DurationField(default=DEFAULT_NAGGING_INTERVAL)
     status = models.CharField(max_length=6, choices=STATUSES, default="new")
 
     def name_then_code(self):
