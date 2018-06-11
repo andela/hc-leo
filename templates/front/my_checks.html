@@ -118,6 +118,7 @@
             {% csrf_token %}
             <input type="hidden" name="timeout" id="update-timeout-timeout" />
             <input type="hidden" name="grace" id="update-timeout-grace" />
+            <input type="hidden" name="nagging_interval" id="update-nagging-interval" />
             <div class="modal-content">
                 <div class="modal-body">
                     <div class="update-timeout-info text-center">
@@ -150,6 +151,21 @@
                     </div>
 
                     <div id="grace-slider"></div>
+
+                    <div class="update-timeout-info text-center">
+                        <span
+                            class="update-timeout-label"
+                            data-toggle="tooltip"
+                            title="When nag is still unresolved, how much time to wait until alert is sent">
+                            Nag interval
+                        </span>
+                        <span
+                            id="nagging-interval-slider-value"
+                            class="update-timeout-value">
+                            1 day
+                        </span>
+                    </div>
+                    <div id="nagging-interval-slider"></div>
 
                     <div class="update-timeout-terms">
                         <p>
