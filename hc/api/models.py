@@ -60,6 +60,7 @@ class Check(models.Model):
     nagging_interval = models.DurationField(default=DEFAULT_NAGGING_INTERVAL)
     next_nagging = models.DateTimeField(null=True, blank=True)
     alert_after = models.DateTimeField(null=True, blank=True, editable=False)
+    nagging_interval = models.DurationField(default=DEFAULT_NAGGING_INTERVAL)
     status = models.CharField(max_length=6, choices=STATUSES, default="new")
 
     def name_then_code(self):
