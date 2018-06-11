@@ -9,4 +9,3 @@ static-collected
 static/.DS_Store
 
 .pytest_cache/
-./idea
