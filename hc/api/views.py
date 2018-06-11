@@ -62,6 +62,9 @@ def checks(request):
             check.timeout = td(seconds=request.json["timeout"])
         if "grace" in request.json:
             check.grace = td(seconds=request.json["grace"])
+        if "nagging_interval" in request.json:
+            check.nagging_interval = td(
+                seconds=request.json["nagging_interval"])
 
         check.save()
 
