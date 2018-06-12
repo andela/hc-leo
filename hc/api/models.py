@@ -87,8 +87,8 @@ class Check(models.Model):
 
         now = timezone.now()
 
-        if self.status == 'often':
-            return 'often'
+        if self.status == "often":
+            return "often"
 
         if self.last_ping + self.timeout + self.grace > now:
             return "up"
@@ -101,8 +101,7 @@ class Check(models.Model):
         if not self.last_ping:
             return False
 
-        ealiest_ping = self.last_ping + self.timeout - self.grace
-        if now < ealiest_ping:
+        if self.last_ping + self.timeout - self.grace > now:
             return True
 
     def in_grace_period(self):
