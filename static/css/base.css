@@ -76,3 +76,8 @@ body {
 .dialog-body {
     margin: 24px 0;
 }
+
+.btn-often {
+    background-color: #b1b816;
+    color: white;
+}
