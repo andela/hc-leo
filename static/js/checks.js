@@ -112,7 +112,7 @@ $(function () {
     NaggingIntervalSlider.noUiSlider.on("update", function(a, b, value) {
         var rounded = Math.round(value);
         $("#nagging-interval-slider-value").text(secsToText(rounded));
-        $("#update-nagging-interval").val(rounded);
+        $("#update-timeout-nagging-interval").val(rounded);
     });
 
 
@@ -136,6 +136,7 @@ $(function () {
         $("#update-timeout-form").attr("action", $this.data("url"));
         periodSlider.noUiSlider.set($this.data("timeout"))
         graceSlider.noUiSlider.set($this.data("grace"))
+        NaggingIntervalSlider.noUiSlider.set($this.data("nagging_interval"))
         $('#update-timeout-modal').modal({"show":true, "backdrop":"static"});
 
         return false;
