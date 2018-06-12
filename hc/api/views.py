@@ -28,6 +28,7 @@ def ping(request, code):
         if check.running_too_often():
             state = Check.objects.filter(user=check.user)
             check.status = "often"
+            check.save()
             ctx = {
                 "checks": list(state),
                 "check": check
