@@ -26,7 +26,7 @@
                 <span class="status icon-up"></span>
             {% elif check.get_status == "down" %}
                 <span class="status icon-down"></span>
-            {% elif check.allowed_nagging %}
+            {% elif check.get_status == "nag" %}
                 <span class="status icon-nagging"></span>
             {% endif %}
         </td>
