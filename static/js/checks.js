@@ -136,7 +136,7 @@ $(function () {
         $("#update-timeout-form").attr("action", $this.data("url"));
         periodSlider.noUiSlider.set($this.data("timeout"))
         graceSlider.noUiSlider.set($this.data("grace"))
-        NaggingIntervalSlider.noUiSlider.set($this.data("nagging_interval"))
+        NaggingIntervalSlider.noUiSlider.set($this.data("nagging"))
         $('#update-timeout-modal').modal({"show":true, "backdrop":"static"});
 
         return false;
