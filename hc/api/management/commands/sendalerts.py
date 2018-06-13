@@ -21,11 +21,9 @@ class Command(BaseCommand):
         now = timezone.now()
         going_down = query.filter(alert_after__lt=now, status="up")
         going_up = query.filter(alert_after__gt=now, status="down")
-        nagging_down = query.filter(next_nagging__lt=now, status="down")
-        nagging_up = query.filter(next_nagging__gt=now, status="nag")
-        
+        nagging_up = query.filter(next_nagging__lt=now, status="nag")
         # Don't combine this in one query so Postgres can query using index:
-        checks = list(going_down.iterator()) + list(going_up.iterator()) + list(nagging_down.iterator()) + list(nagging_up.iterator())
+        checks = list(going_down.iterator()) + list(going_up.iterator()) + list(nagging_up.iterator())
         if not checks:
             return False
 
@@ -52,7 +50,6 @@ class Command(BaseCommand):
             check.status = "nag"
         elif check.status == "nag":
             check.next_nagging = timezone.now() + check.nagging_interval
-            check.next_nagging
 
         check.save()
         self.send_alert(check)
@@ -74,7 +71,7 @@ class Command(BaseCommand):
                                 
         connection.close()
         return True
-
+    
     def handle(self, *args, **options):
         self.stdout.write("sendalerts is now running")
 
