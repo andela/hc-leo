@@ -21,10 +21,17 @@ def ping(request, code):
     except Check.DoesNotExist:
         return HttpResponseBadRequest()
 
-    check.n_pings = F("n_pings") + 1
-    check.last_ping = timezone.now()
     if check.status in ("new", "paused"):
         check.status = "up"
+    if check.status not in ("down"):
+        if check.running_too_often():
+            check.status = "often"
+            check.save()
+            check.send_alert()
+        else:
+            check.status = "up"
+    check.n_pings = F("n_pings") + 1
+    check.last_ping = timezone.now()
 
     check.save()
     check.refresh_from_db()
