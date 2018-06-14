@@ -172,7 +172,7 @@ $(function () {
     NaggingIntervalSlider.noUiSlider.on("update", function(a, b, value) {
         var rounded = Math.round(value);
         $("#nagging-interval-slider-value").text(secsToText(rounded));
-        $("#update-nagging-interval").val(rounded);
+        $("#update-timeout-nagging-interval").val(rounded);
     });
 
 
