@@ -119,63 +119,6 @@ $(function () {
         $("#update-nagging-interval").val(rounded);
     });
 
-    var NaggingIntervalSlider = document.getElementById("nagging-interval-slider");
-    noUiSlider.create(NaggingIntervalSlider, {
-        start: [20],
-        connect: "lower",
-        range: {
-            'min': [60, 60],
-            '33%': [3600, 3600],
-            '66%': [86400, 86400],
-            '83%': [604800, 604800],
-            'max': 2592000,
-        },
-        pips: {
-            mode: 'values',
-            values: [60, 1800, 3600, 43200, 86400, 604800, 2592000],
-            density: 4,
-            format: {
-                to: secsToText,
-                from: function() {}
-            }
-        }
-    });
-
-    NaggingIntervalSlider.noUiSlider.on("update", function(a, b, value) {
-        var rounded = Math.round(value);
-        $("#nagging-interval-slider-value").text(secsToText(rounded));
-        $("#update-timeout-nagging-interval").val(rounded);
-    });
-
-    var NaggingIntervalSlider = document.getElementById("nagging-interval-slider");
-    noUiSlider.create(NaggingIntervalSlider, {
-        start: [20],
-        connect: "lower",
-        range: {
-            'min': [60, 60],
-            '33%': [3600, 3600],
-            '66%': [86400, 86400],
-            '83%': [604800, 604800],
-            'max': 2592000,
-        },
-        pips: {
-            mode: 'values',
-            values: [60, 1800, 3600, 43200, 86400, 604800, 2592000],
-            density: 4,
-            format: {
-                to: secsToText,
-                from: function() {}
-            }
-        }
-    });
-
-    NaggingIntervalSlider.noUiSlider.on("update", function(a, b, value) {
-        var rounded = Math.round(value);
-        $("#nagging-interval-slider-value").text(secsToText(rounded));
-        $("#update-timeout-nagging-interval").val(rounded);
-    });
-
-
     $('[data-toggle="tooltip"]').tooltip();
 
     $(".my-checks-name").click(function() {

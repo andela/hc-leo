@@ -9,7 +9,7 @@
         The check <strong>{{ check.name_then_code }}</strong>
         is running too often. It pinged before the specified
         period was over.
-    {% if check.status == "nag" %}
+    {% elif check.status == "nag" %}
         Your check <strong>{{ check.name_then_code }}</strong> is still <strong>DOWN</strong>.
         <br />
         To stop receiving notifications kindly resolve your check.
