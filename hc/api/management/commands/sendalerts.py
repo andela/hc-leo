@@ -51,9 +51,12 @@ class Command(BaseCommand):
         elif check.status == "nag":
             check.next_nagging = timezone.now() + check.nagging_interval
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
             check.next_nagging
 >>>>>>> feat: implement send nag alert notification in sendalerts command
+=======
+>>>>>>> fix: resolve nag alert nofication in sendalerts command
 
         check.save()
         self.send_alert(check)
