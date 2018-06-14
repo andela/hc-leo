@@ -29,6 +29,8 @@
             {% elif check.get_status == "often" %}
                 <span class="status icon-up often" 
                     data-toggle="tooltip" title="Too often. Ping ran too early"></span>
+            {% elif check.get_status == "nag" %}
+                <span class="status icon-nagging"></span>
             {% endif %}
         </td>
         <td class="name-cell">
