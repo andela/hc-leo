@@ -18,10 +18,7 @@ STATUSES = (
     ("down", "Down"),
     ("new", "New"),
     ("paused", "Paused"),
-<<<<<<< HEAD
     ("often", "Often"),
-=======
->>>>>>> 67ee17fb922de4b349e83e4e0eab07087e17c545
     ("nag", "Nag")
 )
 DEFAULT_TIMEOUT = td(days=1)
