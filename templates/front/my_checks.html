@@ -22,6 +22,8 @@
                 <button class="btn btn-danger btn-xs" data-toggle="button">{{ tag }}</button>
             {% elif tag in grace_tags %}
                 <button class="btn btn-warning btn-xs" data-toggle="button">{{ tag }}</button>
+            {% elif tag in often_tags %}
+                <button class="btn btn-often btn-xs" data-toggle="button">{{ tag }}</button>
             {% else %}
                 <button class="btn btn-default btn-xs" data-toggle="button">{{ tag }}</button>
             {% endif %}

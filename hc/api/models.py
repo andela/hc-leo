@@ -17,8 +17,9 @@ STATUSES = (
     ("up", "Up"),
     ("down", "Down"),
     ("new", "New"),
-    ("paused", "Paused")
-)
+    ("paused", "Paused"),
+    ("often", "Often"))
+
 DEFAULT_TIMEOUT = td(days=1)
 DEFAULT_GRACE = td(hours=1)
 CHANNEL_KINDS = (("email", "Email"), ("webhook", "Webhook"),
@@ -69,7 +70,7 @@ class Check(models.Model):
         return "%s@%s" % (self.code, settings.PING_EMAIL_DOMAIN)
 
     def send_alert(self):
-        if self.status not in ("up", "down"):
+        if self.status not in ("up", "down", "often"):
             raise NotImplementedError("Unexpected status: %s" % self.status)
 
         errors = []
@@ -86,10 +87,22 @@ class Check(models.Model):
 
         now = timezone.now()
 
+        if self.status == "often":
+            return "often"
+
         if self.last_ping + self.timeout + self.grace > now:
             return "up"
 
         return "down"
+
+    def running_too_often(self):
+
+        now = timezone.now()
+        if not self.last_ping:
+            return False
+
+        if self.last_ping + self.timeout - self.grace > now:
+            return True
 
     def in_grace_period(self):
         if self.status in ("new", "paused"):
