@@ -6,7 +6,7 @@ $(function () {
     var WEEK = {name: "week", nsecs: DAY.nsecs * 7};
     var MONTH = {name: "month", nsecs: DAY.nsecs * 30};
     var YEAR = {name: "year", nsecs: MONTH.nsecs * 12};
-    var UNITS = [WEEK, DAY, HOUR, MINUTE, MONTH, YEAR];
+    var UNITS = [YEAR, MONTH, WEEK, DAY, HOUR, MINUTE];
 
     var secsToText = function(total) {
         var remainingSeconds = Math.floor(total);

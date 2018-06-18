@@ -57,7 +57,6 @@ class CreateCheckTestCase(BaseTestCase):
                              content_type='application/json',
                              HTTP_X_API_KEY='abc')
 
-        print(r.json())
         self.assertEqual(r.status_code, 201)
 
 
