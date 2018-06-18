@@ -33,7 +33,7 @@ def my_checks(request):
     checks = list(q)
 
     counter = Counter()
-    down_tags, grace_tags = set(), set()
+    down_tags, grace_tags, often_tags = set(), set(), set()
     for check in checks:
         status = check.get_status()
         for tag in check.tags_list():
@@ -44,6 +44,8 @@ def my_checks(request):
 
             if status == "down":
                 down_tags.add(tag)
+            elif status == "often":
+                often_tags.add(tag)
             elif check.in_grace_period():
                 grace_tags.add(tag)
 
@@ -54,10 +56,45 @@ def my_checks(request):
         "tags": counter.most_common(),
         "down_tags": down_tags,
         "grace_tags": grace_tags,
-        "ping_endpoint": settings.PING_ENDPOINT
+        "often_tags": often_tags,
+        "ping_endpoint": settings.PING_ENDPOINT,
+        "failing_count": get_failing_checks(request)[1]
     }
 
     return render(request, "front/my_checks.html", ctx)
+
+
+def get_failing_checks(request):
+    q = Check.objects.filter(user=request.team.user).order_by("created")
+    checks = list(q)
+    failing_checks = [check for check in checks if check.get_status() == "down"]
+    return failing_checks, len(failing_checks)
+
+
+@login_required
+def unresolved(request):
+    counter = Counter()
+    down_tags = set()
+    failing_checks = get_failing_checks(request)[0]
+    for check in failing_checks:
+        for tag in check.tags_list():
+            if tag == "":
+                continue
+
+            counter[tag] += 1
+            down_tags.add(tag)
+
+    ctx = {
+        "page": "unresolved",
+        "checks": failing_checks,
+        "failing_count": len(failing_checks),
+        "now": timezone.now(),
+        "tags": counter.most_common(),
+        "down_tags": down_tags,
+        "ping_endpoint": settings.PING_ENDPOINT
+    }
+
+    return render(request, "front/unresolved.html", ctx)
 
 
 def _welcome_check(request):
@@ -101,6 +138,9 @@ def docs(request):
         "ping_url": check.url()
     }
 
+    if request.user.is_authenticated:
+        ctx['failing_count'] = get_failing_checks(request)[1]
+
     return render(request, "front/docs.html", ctx)
 
 
@@ -118,7 +158,13 @@ def docs_api(request):
 
 
 def about(request):
-    return render(request, "front/about.html", {"page": "about"})
+    ctx = {
+        "page": "about"
+    }
+    if request.user.is_authenticated:
+        ctx['failing_count'] = get_failing_checks(request)[1]
+
+    return render(request, "front/about.html", ctx)
 
 
 @login_required
@@ -286,7 +332,8 @@ def channels(request):
         "channels": channels,
         "num_checks": num_checks,
         "enable_pushbullet": settings.PUSHBULLET_CLIENT_ID is not None,
-        "enable_pushover": settings.PUSHOVER_API_TOKEN is not None
+        "enable_pushover": settings.PUSHOVER_API_TOKEN is not None,
+        "failing_count": get_failing_checks(request)[1]
     }
     return render(request, "front/channels.html", ctx)
 
