@@ -1,3 +1,4 @@
 from django.contrib import admin
+from hc.help.models import Faq
 
-# Register your models here.
+admin.site.register(Faq)

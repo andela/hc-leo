@@ -6,7 +6,24 @@
 {% block content %}
 <div class="row">
   <div class="col-sm-12">
-      <h3>FAQs</h3>
+      <h3>FAQ - <small>Frequently Asked Questions</small></h3>
+      <div class="container">
+        {% if faqs %}
+            {% for faq in faqs %}
+                <div class="item">
+                    <div class="faq-question pointer" data-toggle="collapse" data-target="#faq-{{ faq.id }}">
+                      <h4>{{ faq.question }}</h4>
+                    </div>
+                    <div div id="faq-{{ faq.id }}" class="collapse faq-answer">
+                      <h5><span class="label label-primary">Answer</span></h5>
+                      <p>{{ faq.answer }}</p>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="alert alert-info">No Questions yet!!!</div>
+        {% endif %}
+      </div>
   </div>
 </div>
 {% endblock %}
