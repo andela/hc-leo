@@ -1,4 +1,4 @@
 from django.shortcuts import render
 
-def index(request):
-    pass
+def faq(request):
+    return render(request, "help/faq.html")
