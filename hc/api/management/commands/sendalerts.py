@@ -21,9 +21,9 @@ class Command(BaseCommand):
         now = timezone.now()
         going_down = query.filter(alert_after__lt=now, status="up")
         going_up = query.filter(alert_after__gt=now, status="down")
-        nagging_up = query.filter(next_nagging__lt=now, status="nag")
+        nag_on = query.filter(next_nagging__lt=now, nag_status=True, status="down")
         # Don't combine this in one query so Postgres can query using index:
-        checks = list(going_down.iterator()) + list(going_up.iterator()) + list(nagging_up.iterator())
+        checks = list(going_down.iterator()) + list(going_up.iterator()) + list(nag_on.iterator())
         if not checks:
             return False
 
@@ -43,13 +43,12 @@ class Command(BaseCommand):
 
         # Save the new status. If sendalerts crashes,
         # it won't process this check again.
+        now = timezone.now()
         check.status = check.get_status()
 
         if check.status == "down":
             check.next_nagging = timezone.now() + check.nagging_interval
-            check.status = "nag"
-        elif check.status == "nag":
-            check.next_nagging = timezone.now() + check.nagging_interval
+            check.nag_status = True
 
         check.save()
         self.send_alert(check)

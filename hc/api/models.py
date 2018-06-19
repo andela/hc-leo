@@ -55,6 +55,7 @@ class Check(models.Model):
     last_ping = models.DateTimeField(null=True, blank=True)
     nagging_interval = models.DurationField(default=DEFAULT_NAGGING_INTERVAL)
     next_nagging = models.DateTimeField(null=True, blank=True)
+    nag_status = models.BooleanField(default=False)
     alert_after = models.DateTimeField(null=True, blank=True, editable=False)
     status = models.CharField(max_length=6, choices=STATUSES, default="new")
 
@@ -74,7 +75,7 @@ class Check(models.Model):
         return "%s@%s" % (self.code, settings.PING_EMAIL_DOMAIN)
 
     def send_alert(self):
-        if self.status not in ("up", "down", "often", "nag"):
+        if self.status not in ("up", "down", "often"):
             raise NotImplementedError("Unexpected status: %s" % self.status)
 
         errors = []
@@ -98,8 +99,6 @@ class Check(models.Model):
 
         if self.last_ping + self.timeout + self.grace > now:
             return "up"
-        if self.last_ping + self.timeout + self.grace + self.nagging_interval < now:
-            return "nag"
 
         return "down"
 
@@ -120,6 +119,11 @@ class Check(models.Model):
         grace_ends = up_ends + self.grace
         return up_ends < timezone.now() < grace_ends
 
+    def in_nag_period(self):
+        now = timezone.now()
+        if  self.last_ping + self.timeout + self.grace + self.nagging_interval < now:
+            return "nag"
+
     def assign_all_channels(self):
         if self.user:
             channels = Channel.objects.filter(user=self.user)
@@ -138,6 +142,7 @@ class Check(models.Model):
             "tags": self.tags,
             "timeout": int(self.timeout.total_seconds()),
             "grace": int(self.grace.total_seconds()),
+            "nag":int(self.nagging_interval.total_seconds()),
             "n_pings": self.n_pings,
             "nagging_interval": int(self.nagging_interval.total_seconds()),
             "status": self.get_status()

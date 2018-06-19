@@ -24,13 +24,13 @@
                 <span class="status icon-grace"></span>
             {% elif check.get_status == "up" %}
                 <span class="status icon-up"></span>
-            {% elif check.get_status == "down" %}
-                <span class="status icon-down"></span>
             {% elif check.get_status == "often" %}
                 <span class="status icon-up often" 
                     data-toggle="tooltip" title="Too often. Ping ran too early"></span>
-            {% elif check.get_status == "nag" %}
+            {% elif check.in_nag_period == "nag" and check.get_status == "down" %}
                 <span class="status icon-nagging"></span>
+            {% elif check.get_status == "down" %}
+                <span class="status icon-down"></span>
             {% endif %}
         </td>
         <td class="name-cell">
