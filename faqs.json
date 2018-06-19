@@ -1,0 +1,114 @@
+[
+  {
+    "model":"help.faq",
+    "pk":1,
+    "fields":{
+      "question":"WHAT DOES HEALTHCHECKS DO",
+      "answer":"Health Checks is a platform that monitors your con jobs and notifies you of their status."
+    }
+  },
+  {
+    "model":"help.faq",
+    "pk":2,
+    "fields":{
+      "question":"WHAT IS A CRON JOB",
+      "answer":"This are tasks that are created on your server to run automatically after a period of time"
+    }
+  },
+  {
+    "model":"help.faq",
+    "pk":3,
+    "fields":{
+      "question":"HOW DOES IT NOTIFY ME",
+      "answer":"It will send notifications through your preferred channel."
+    }
+  },
+  {
+    "model":"help.faq",
+    "pk":4,
+    "fields":{
+      "question":"WHAT ARE THE CHANNELS OF COMMUNICATION",
+      "answer":"The notifications will be sent through email,sms, slack and telegram plus other common channels."
+    }
+  },
+  {
+    "model":"help.faq",
+    "pk":5,
+    "fields":{
+      "question":"WILL IT NAG ME",
+      "answer":"Yes it will nag you if you do not attend to a cron job that is down."
+    }
+  },
+  {
+    "model":"help.faq",
+    "pk":6,
+    "fields":{
+      "question":"WHY SHOULD I USE HEALTHCHECKS",
+      "answer":"It will give you peace of mind as you are sure any down time will be reported immediately."
+    }
+  },
+  {
+    "model":"help.faq",
+    "pk":7,
+    "fields":{
+      "question":"HOW DO I PAY",
+      "answer":"Payments are through mastercard, Visa, PayPal and American Express."
+    }
+  },
+  {
+    "model":"help.faq",
+    "pk":8,
+    "fields":{
+      "question":"WHAT PROGRAMMING LANGUAGES CAN I USE HEALTHCHECKS WITH",
+      "answer":"You can use it with any language that can fetch a url. Like python and ruby"
+    }
+  },
+  {
+    "model":"help.faq",
+    "pk":9,
+    "fields":{
+      "question":"HOW LONG IS IT BETWEEN PINGS",
+      "answer":"You can configure the period between each ping according to your preference"
+    }
+  },
+  {
+    "model":"help.faq",
+    "pk":10,
+    "fields":{
+      "question":"WHAT DOES HEALTHCHECKS DO",
+      "answer":"Health Checks is a platform that monitors your con jobs and notifies you of their status"
+    }
+  },
+  {
+    "model":"help.faq",
+    "pk":11,
+    "fields":{
+      "question":"WHAT ARE THE CHANNELS OF COMMUNICATION",
+      "answer":"The notifications will be sent through email,sms, slack and telegram plus other common channels"
+    }
+  },
+  {
+    "model":"help.faq",
+    "pk":12,
+    "fields":{
+      "question":"WHY SHOULD I USE HEALTHCHECKS",
+      "answer":"It will give you peace of mind as you are sure any down time will be reported immediately"
+    }
+  },
+  {
+    "model":"help.faq",
+    "pk":13,
+    "fields":{
+      "question":"How does syncing work",
+      "answer":"When an email is registered any device connected to the health checks app is automatically syncronised"
+    }
+  },
+  {
+    "model":"help.faq",
+    "pk":14,
+    "fields":{
+      "question":"Does the app work on mobile phone",
+      "answer":"The Site is modified to work on any App hence can be accessed on any mobile phone device"
+    }
+  }
+]

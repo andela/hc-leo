@@ -17,6 +17,9 @@
                     <div div id="faq-{{ faq.id }}" class="collapse faq-answer">
                       <h5><span class="label label-primary">Answer</span></h5>
                       <p>{{ faq.answer }}</p>
+                      {% if faq.media %}
+                          <iframe width="560" height="315" src="{{ faq.media }}" frameborder="0" allow="encrypted-media" allowfullscreen></iframe>
+                      {% endif %}
                     </div>
                 </div>
             {% endfor %}
