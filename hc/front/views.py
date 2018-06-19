@@ -29,8 +29,15 @@ def pairwise(iterable):
 
 @login_required
 def my_checks(request):
-    q = Check.objects.filter(user=request.team.user).order_by("created")
-    checks = list(q)
+    if request.team == request.user.profile:
+        q = Check.objects.filter(user=request.team.user).order_by("created")
+        checks = list(q)
+    else:
+        q = Check.objects.filter(
+            user=request.team.user,
+            membership_access_allowed=True,
+            member=request.user.id).order_by("created")
+        checks = list(q)
 
     counter = Counter()
     down_tags, grace_tags, often_tags = set(), set(), set()
