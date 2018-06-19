@@ -19,10 +19,12 @@ class Command(BaseCommand):
         query = Check.objects.filter(user__isnull=False).select_related("user")
 
         now = timezone.now()
-        going_down = query.filter(alert_after__lt=now, status="up")
+        going_down_from_up = query.filter(alert_after__lt=now, status="up")
+        going_down_from_often = query.filter(alert_after__lt=now, status="often")
         going_up = query.filter(alert_after__gt=now, status="down")
         # Don't combine this in one query so Postgres can query using index:
-        checks = list(going_down.iterator()) + list(going_up.iterator())
+        checks = list(going_down_from_up.iterator()) + list(going_up.iterator()) + \
+            list(going_down_from_often.iterator())
         if not checks:
             return False
 
