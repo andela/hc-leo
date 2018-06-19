@@ -72,11 +72,16 @@ def my_checks(request):
 
 
 def get_failing_checks(request):
-    q = Check.objects.filter(user=request.team.user).order_by("created")
-    checks = list(q)
-    failing_checks = [
-        check for check in checks
-        if check.get_status() == "down" or check.get_status() == "nag"]
+    if request.team == request.user.profile:
+        q = Check.objects.filter(user=request.team.user).order_by("created")
+        checks = list(q)
+    else:
+        q = Check.objects.filter(
+            user=request.team.user,
+            membership_access_allowed=True,
+            member=request.user.id).order_by("created")
+        checks = list(q)
+    failing_checks = [check for check in checks if check.get_status() == "down"]
     return failing_checks, len(failing_checks)
 
 
