@@ -226,6 +226,47 @@ def create_blog(request):
 
 
 @login_required
+def read_blog(request, pk):
+    '''
+    Method to read a particular blog
+    '''
+    blog = Blog.objects.get(pk=int(pk))
+    return render(request, "front/read_blog.html", {'blog': blog})
+
+
+@login_required
+def delete_blog(request, pk):
+    '''Method to delete an existing blog'''
+    blog_to_delete = Blog.objects.get(pk=int(pk))
+    blog_to_delete.delete()
+    return redirect("hc-blog")
+
+
+@login_required
+def edit_blog(request, pk):
+    '''
+    Method to edit a particular blog
+    '''
+    blog = Blog.objects.get(pk=int(pk))
+    categories = Category.objects.all()
+
+    if request.method == "GET":
+        form = AddBlogPostForm()
+        return render(request, "front/edit_blogpost.html", {'blog': blog, 'categories': categories, 'form': form})
+
+    elif request.method == "POST":
+        form = AddBlogPostForm(request.POST)
+        if form.is_valid():
+            blog.title = form.cleaned_data['title']
+            blog.body = form.cleaned_data['body']
+            blog.category = form.cleaned_data['category']
+            blog.save()
+            return redirect("hc-blog")
+
+    return render(request, "front/edit_blogpost.html", {'blog': blog, 'categories': categories, 'form': form})
+
+
+@login_required
 def add_check(request):
     assert request.method == "POST"
 

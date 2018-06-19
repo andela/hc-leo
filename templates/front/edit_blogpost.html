@@ -11,7 +11,7 @@
         <!--<h2>Blog</h2>-->
         <div class="page-header">
             <h1>Healthchecks Blog</h1>
-            <p class="lead blog-description text-muted">Create a new Post</p>
+            <p class="lead blog-description text-muted">Edit Post</p>
         </div>
     </div>
 </div>
@@ -20,12 +20,12 @@
 
       <div class="row">
           <div class="col-md-8">
-          <form method="POST" action="/blog/save/">
+          <form method="POST" action="{%  url 'hc-edit_blog' blog.id %}">
               {% csrf_token %}
 
               <div class="form-group">
                 <label for="title">Title</label>
-                <input type="text" class="form-control" id="title" name="title" placeholder="Post title" required>
+                <input type="text" class="form-control" id="title" name="title" placeholder="Post title" value="{{ blog.title}}" required>
               </div>
 
               <div class="form-group">
@@ -39,12 +39,11 @@
 
               <div class="form-group">
                 <label for="body">Body</label>
-                <textarea class="form-control" id="body" rows="3" name="body" required></textarea>
+                <textarea class="form-control" id="body" rows="3" name="body" required>{{ blog.body }}</textarea>
               </div>
 
-          <button type="submit" class="btn btn-primary">Submit</button>
+          <button type="submit" class="btn btn-primary">Update</button>
         </form>
-
 
           </div>
 
@@ -54,7 +53,6 @@
           <!--From to add Category-->
             <form method="POST" action="/blog/save/" class="post-form">
                 {% csrf_token %}
-                {{ form.as_p }}
 
                 <h4>Add Category</h4>
                 <div class="input-group">
