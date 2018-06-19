@@ -168,6 +168,28 @@ def about(request):
 
 
 @login_required
+def blog(request):
+    ctx = {
+        "page": "blog"
+    }
+    if request.user.is_authenticated:
+        ctx['failing_count'] = get_failing_checks(request)[1]
+
+    return render(request, "front/blog.html", ctx)
+
+
+@login_required
+def add_blogpost(request):
+    ctx = {
+        "page": "add_blogpost"
+    }
+    if request.user.is_authenticated:
+        ctx['failing_count'] = get_failing_checks(request)[1]
+
+    return render(request, "front/add_blogpost.html", ctx)
+
+
+@login_required
 def add_check(request):
     assert request.method == "POST"
 
