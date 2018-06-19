@@ -28,6 +28,16 @@ channel_urls = [
         name="hc-verify-email"),
 ]
 
+blog_urls = [
+    url(r'^$', views.blog, name="hc-blog"),
+    # url(r'^read_blog/(?P<pk>\d+)$', views.read_blog, name="hc-read_blog"),
+    url(r'^create/$', views.add_blogpost, name="hc-create-blogpost"),
+    url(r'^save/$', views.create_blog, name="hc-save-category"),
+    # url(r'^list_blog$', views.list_blog, name="hc-list_blog"),
+    # url(r'^edit_blogs/(?P<pk>\d+)$', views.edit_blogs, name="hc-edit_blog"),
+    # url(r'^delete_blog/(?P<pk>\d+)$', views.delete_blog, name="hc-delete_blog"),
+]
+
 urlpatterns = [
     url(r'^$', views.index, name="hc-index"),
     url(r'^checks/$', views.my_checks, name="hc-checks"),
@@ -40,6 +50,5 @@ urlpatterns = [
     url(r'^about/$', views.about, name="hc-about"),
     url(r'^privacy/$', views.privacy, name="hc-privacy"),
     url(r'^terms/$', views.terms, name="hc-terms"),
-    url(r'^blog/$', views.blog, name="hc-blog"),
-    url(r'^blog/create$', views.add_blogpost, name="hc-create-blogpost"),
+    url(r'^blog/', include(blog_urls)),
 ]

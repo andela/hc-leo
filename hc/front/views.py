@@ -15,8 +15,9 @@ from django.utils.crypto import get_random_string
 from django.utils.six.moves.urllib.parse import urlencode
 from hc.api.decorators import uuid_or_400
 from hc.api.models import DEFAULT_GRACE, DEFAULT_TIMEOUT, Channel, Check, Ping
+from .models import Category, Blog
 from hc.front.forms import (AddChannelForm, AddWebhookForm, NameTagsForm,
-                            TimeoutForm)
+                            TimeoutForm, AddBlogPostForm, CreateCategoryForm)
 
 
 # from itertools recipes:
@@ -169,9 +170,15 @@ def about(request):
 
 @login_required
 def blog(request):
+    blogs = Blog.objects.all()
+    categories = Category.objects.all()
+
     ctx = {
-        "page": "blog"
+        "page": "blog",
+        "blogs": blogs,
+        "categories": categories
     }
+
     if request.user.is_authenticated:
         ctx['failing_count'] = get_failing_checks(request)[1]
 
@@ -180,13 +187,42 @@ def blog(request):
 
 @login_required
 def add_blogpost(request):
+    categories = Category.objects.all()
+
     ctx = {
-        "page": "add_blogpost"
+        "page": "add_blogpost",
+        "categories": categories
     }
     if request.user.is_authenticated:
         ctx['failing_count'] = get_failing_checks(request)[1]
 
     return render(request, "front/add_blogpost.html", ctx)
+
+
+@login_required
+def create_blog(request):
+    ''' Method to create a blog '''
+    categoryForm = CreateCategoryForm(request.POST)
+    blogForm = AddBlogPostForm(request.POST)
+
+    if categoryForm.is_bound and categoryForm.is_valid():
+        name = categoryForm.cleaned_data['name']
+        cat = Category(name=name)
+        cat.save()
+        return redirect("hc-create-blogpost")
+
+    elif blogForm.is_bound and blogForm.is_valid():
+        title = blogForm.cleaned_data['title']
+        print(">>>>>>>", title)
+        category = blogForm.cleaned_data['category']
+        body = blogForm.cleaned_data['body']
+        published = timezone.now()
+        user = request.user
+        blog = Blog(title=title, body=body, published=published, category=category, user=user)
+        blog.save()
+        return redirect("hc-blog")
+
+    return render(request, "front/add_blogpost.html", {'form': categoryForm, 'form1': blogForm})
 
 
 @login_required
