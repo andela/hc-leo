@@ -172,12 +172,14 @@ def profile(request):
             if form.is_valid():
 
                 email = form.cleaned_data["email"]
+                check = form.cleaned_data["check"]
                 try:
                     user = User.objects.get(email=email)
                 except User.DoesNotExist:
                     user = _make_user(email)
 
-                profile.invite(user)
+                assigned_check = Check.objects.get(name=check)
+                profile.invite(user, assigned_check)
                 messages.success(request, "Invitation to %s sent!" % email)
         elif "remove_team_member" in request.POST:
             form = RemoveTeamMemberForm(request.POST)
