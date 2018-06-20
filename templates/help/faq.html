@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+{% block title %}FAQ - healthchecks.io{% endblock %}
+
+{% block content %}
+<div class="row">
+  <div class="col-sm-12">
+      <h3>FAQ - <small>Frequently Asked Questions</small></h3>
+      <div class="container">
+        {% if faqs %}
+            {% for faq in faqs %}
+                <div class="item">
+                    <div class="faq-question pointer text-uppercase" data-toggle="collapse" data-target="#faq-{{ faq.id }}">
+                      <h4>{{ faq.question }}</h4>
+                    </div>
+                    <div div id="faq-{{ faq.id }}" class="collapse faq-answer">
+                      <h5><span class="label label-primary">Answer</span></h5>
+                      <p>{{ faq.answer }}</p>
+                      {% if faq.media %}
+                          <iframe width="560" height="315" src="{{ faq.media }}" frameborder="0" allow="encrypted-media" allowfullscreen></iframe>
+                      {% endif %}
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="alert alert-info">No Questions yet!!!</div>
+        {% endif %}
+      </div>
+  </div>
+</div>
+<script type='text/javascript' data-cfasync='false'>window.purechatApi = { l: [], t: [], on: function () { this.l.push(arguments); } }; (function () { var done = false; var script = document.createElement('script'); script.async = true; script.type = 'text/javascript'; script.src = 'https://app.purechat.com/VisitorWidget/WidgetScript'; document.getElementsByTagName('HEAD').item(0).appendChild(script); script.onreadystatechange = script.onload = function (e) { if (!done && (!this.readyState || this.readyState == 'loaded' || this.readyState == 'complete')) { var w = new PCWidget({c: '9607cdee-b497-4c35-84fd-cc5da1411075', f: true }); done = true; } }; })();</script>
+{% endblock %}
