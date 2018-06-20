@@ -186,6 +186,11 @@ def blog(request):
 
 @login_required
 def add_blogpost(request):
+    '''
+    Method to show form to create a new blog post
+    :param request:
+    :return:
+    '''
     categories = Category.objects.all()
 
     ctx = {
@@ -200,7 +205,11 @@ def add_blogpost(request):
 
 @login_required
 def create_blog(request):
-    ''' Method to create a blog '''
+    '''
+     Method to create a blog
+    :param request:
+    :return:
+    '''
     categoryForm = CreateCategoryForm(request.POST)
     blogForm = AddBlogPostForm(request.POST)
 
@@ -212,7 +221,6 @@ def create_blog(request):
 
     elif blogForm.is_bound and blogForm.is_valid():
         title = blogForm.cleaned_data['title']
-        print(">>>>>>>", title)
         category = blogForm.cleaned_data['category']
         body = blogForm.cleaned_data['body']
         published = timezone.now()
@@ -234,7 +242,12 @@ def read_blog(request, pk):
 
 @login_required
 def delete_blog(request, pk):
-    '''Method to delete an existing blog'''
+    '''
+    Method to delete an existing blog
+    :param request:
+    :param pk:
+    :return:
+    '''
     blog_to_delete = Blog.objects.get(pk=int(pk))
     blog_to_delete.delete()
     return redirect("hc-blog")
@@ -244,6 +257,9 @@ def delete_blog(request, pk):
 def edit_blog(request, pk):
     '''
     Method to edit a particular blog
+    :param request:
+    :param pk:
+    :return:
     '''
     blog = Blog.objects.get(pk=int(pk))
     categories = Category.objects.all()
