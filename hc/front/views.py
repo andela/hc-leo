@@ -296,6 +296,11 @@ def edit_blog(request, pk):
 
 @login_required
 def blog(request):
+    '''
+    Methods to view the blog
+    :param request:
+    :return:
+    '''
     ctx = {
         "page": "blog"
     }
@@ -307,6 +312,11 @@ def blog(request):
 
 @login_required
 def add_blogpost(request):
+    '''
+    Method to render form to add blog post
+    :param request:
+    :return:
+    '''
     ctx = {
         "page": "add_blogpost"
     }
