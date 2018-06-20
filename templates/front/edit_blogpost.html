@@ -29,10 +29,13 @@
               </div>
 
               <div class="form-group">
-                <label for="category">Example select</label>
+                <label for="category">Category</label>
                 <select class="form-control" id="category" name="category" required>
+                    <option value="{{ blog.category.id }}" selected>{{ blog.category }}</option>
                     {% for cat in categories %}
-                  <option value="{{ cat.id }}">{{ cat.name }}</option>
+                    {% if cat.id != blog.category.id%}
+                    <option value="{{ cat.id }}">{{ cat.name }}</option>
+                    {% endif %}
                     {% endfor %}
                 </select>
               </div>
@@ -102,7 +105,15 @@ $(document).ready(function() {
     $('#body').summernote({
         placeholder: 'Type you post here..',
         tabsize: 2,
-        height: 100
+        height: 100,
+        toolbar: [
+            ['style', ['bold', 'italic', 'underline', 'clear']],
+            ['font', ['strikethrough', 'superscript', 'subscript']],
+            ['fontsize', ['fontsize']],
+            ['color', ['color']],
+            ['para', ['ul', 'ol', 'paragraph']],
+            ['height', ['height']]
+        ]
     });
 });
 </script>

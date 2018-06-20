@@ -168,9 +168,8 @@ def about(request):
     return render(request, "front/about.html", ctx)
 
 
-@login_required
 def blog(request):
-    blogs = Blog.objects.all()
+    blogs = Blog.objects.order_by('-published')
     categories = Category.objects.all()
 
     ctx = {
@@ -225,7 +224,6 @@ def create_blog(request):
     return render(request, "front/add_blogpost.html", {'form': categoryForm, 'form1': blogForm})
 
 
-@login_required
 def read_blog(request, pk):
     '''
     Method to read a particular blog

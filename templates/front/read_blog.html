@@ -8,6 +8,7 @@
     <div class="col-sm-12">
         <!--<h2>Blog</h2>-->
         <div class="page-header">
+            {% if user.is_authenticated %}
             <div class='btn-toolbar pull-right'>
                 <a class="btn btn-primary" href="{% url 'hc-create-blogpost' %}">
                     Create a Post
@@ -17,6 +18,7 @@
                 <a href="{% url 'hc-edit_blog' blog.id %}" class="btn btn-default">Edit</a>
                 {% endif %}
             </div>
+            {% endif %}
             <h1>Healthchecks Blog</h1>
         </div>
     </div>
@@ -40,67 +42,6 @@
             <div class="alert alert-info">This post could not be found</div>
             {% endif %}
         </div>
-
-        <!-- Sidebar Widgets Column -->
-        <!--<div class="col-md-4">-->
-
-          <!--&lt;!&ndash; Search Widget &ndash;&gt;-->
-          <!--<div class="card my-4">-->
-            <!--<h5 class="card-header">Search</h5>-->
-            <!--<div class="card-body">-->
-              <!--<div class="input-group">-->
-                <!--<input type="text" class="form-control" placeholder="Search for...">-->
-                <!--<span class="input-group-btn">-->
-                  <!--<button class="btn btn-secondary" type="button">Go!</button>-->
-                <!--</span>-->
-              <!--</div>-->
-            <!--</div>-->
-          <!--</div>-->
-
-          <!--&lt;!&ndash; Categories Widget &ndash;&gt;-->
-          <!--<div class="card my-4">-->
-            <!--<h5 class="card-header">Categories</h5>-->
-            <!--<div class="card-body">-->
-              <!--<div class="row">-->
-                <!--<div class="col-lg-6">-->
-                  <!--<ul class="list-unstyled mb-0">-->
-                    <!--<li>-->
-                      <!--<a href="#">Web Design</a>-->
-                    <!--</li>-->
-                    <!--<li>-->
-                      <!--<a href="#">HTML</a>-->
-                    <!--</li>-->
-                    <!--<li>-->
-                      <!--<a href="#">Freebies</a>-->
-                    <!--</li>-->
-                  <!--</ul>-->
-                <!--</div>-->
-                <!--<div class="col-lg-6">-->
-                  <!--<ul class="list-unstyled mb-0">-->
-                    <!--<li>-->
-                      <!--<a href="#">JavaScript</a>-->
-                    <!--</li>-->
-                    <!--<li>-->
-                      <!--<a href="#">CSS</a>-->
-                    <!--</li>-->
-                    <!--<li>-->
-                      <!--<a href="#">Tutorials</a>-->
-                    <!--</li>-->
-                  <!--</ul>-->
-                <!--</div>-->
-              <!--</div>-->
-            <!--</div>-->
-          <!--</div>-->
-
-          <!--&lt;!&ndash; Side Widget &ndash;&gt;-->
-          <!--<div class="card my-4">-->
-            <!--<h5 class="card-header">Side Widget</h5>-->
-            <!--<div class="card-body">-->
-              <!--You can put anything you want inside of these side widgets. They are easy to use, and feature the new Bootstrap 4 card containers!-->
-            <!--</div>-->
-          <!--</div>-->
-
-        <!--</div>-->
 
       </div>
       <!-- /.row -->
