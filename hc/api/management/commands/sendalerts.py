@@ -66,8 +66,6 @@ class Command(BaseCommand):
         for member in team:
             if member.priority == "high" and not member.is_alerted(check):
                 self.notify(check, member.user.email)
-            elif member.priority == "normal" and not member.is_alerted(check):
-                self.notify(check, member.user.email)
             elif member.priority == "low" and not member.is_alerted(check):
                 self.notify(check, member.user.email)
         return True
