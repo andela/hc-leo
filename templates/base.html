@@ -107,12 +107,16 @@
                 <li {% if page == 'about' %} class="active" {% endif %}>
                     <a href="{% url 'hc-about' %}">About</a>
                 </li>
+              
+                <li {% if page == 'blog' %} class="active" {% endif %}>
+                    <a href="{% url 'hc-blog' %}">Blog</a>
+                </li>
 
                 <li {% if page == 'faq' %} class="active" {% endif %}>
                     <a href="{% url 'hc-faq' %}">FAQ</a>
                 </li>
 
-                 <li {% if page == 'blog' %} class="active" {% endif %}>
+                <li {% if page == 'blog' %} class="active" {% endif %}>
                     <a href="{% url 'hc-blog' %}">Blog</a>
                 </li>
 
