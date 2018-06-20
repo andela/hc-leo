@@ -18,10 +18,12 @@ STATUSES = (
     ("down", "Down"),
     ("new", "New"),
     ("paused", "Paused"),
-    ("often", "Often"))
-
+    ("often", "Often"),
+    ("nag", "Nag")
+)
 DEFAULT_TIMEOUT = td(days=1)
 DEFAULT_GRACE = td(hours=1)
+DEFAULT_NAGGING_INTERVAL = td(hours=1)
 CHANNEL_KINDS = (("email", "Email"), ("webhook", "Webhook"),
                  ("hipchat", "HipChat"),
                  ("slack", "Slack"), ("pd", "PagerDuty"), ("po", "Pushover"),
@@ -51,6 +53,9 @@ class Check(models.Model):
     grace = models.DurationField(default=DEFAULT_GRACE)
     n_pings = models.IntegerField(default=0)
     last_ping = models.DateTimeField(null=True, blank=True)
+    nagging_interval = models.DurationField(default=DEFAULT_NAGGING_INTERVAL)
+    next_nagging = models.DateTimeField(null=True, blank=True)
+    nag_status = models.BooleanField(default=False)
     alert_after = models.DateTimeField(null=True, blank=True, editable=False)
     status = models.CharField(max_length=6, choices=STATUSES, default="new")
 
@@ -114,6 +119,11 @@ class Check(models.Model):
         grace_ends = up_ends + self.grace
         return up_ends < timezone.now() < grace_ends
 
+    def in_nag_period(self):
+        now = timezone.now()
+        if  self.last_ping + self.timeout + self.grace + self.nagging_interval < now:
+            return "nag"
+
     def assign_all_channels(self):
         if self.user:
             channels = Channel.objects.filter(user=self.user)
@@ -132,7 +142,9 @@ class Check(models.Model):
             "tags": self.tags,
             "timeout": int(self.timeout.total_seconds()),
             "grace": int(self.grace.total_seconds()),
+            "nag":int(self.nagging_interval.total_seconds()),
             "n_pings": self.n_pings,
+            "nagging_interval": int(self.nagging_interval.total_seconds()),
             "status": self.get_status()
         }
 
