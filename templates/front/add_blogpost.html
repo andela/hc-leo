@@ -29,7 +29,7 @@
               </div>
 
               <div class="form-group">
-                <label for="category">Example select</label>
+                <label for="category">Category</label>
                 <select class="form-control" id="category" name="category" required>
                     {% for cat in categories %}
                   <option value="{{ cat.id }}">{{ cat.name }}</option>
@@ -73,19 +73,17 @@
                     <div class="col-lg-6">
                       {% if categories %}
                         <ul>
-                        {% for item in categories %}
+                            {% for item in categories %}
                             <li>{{ item.name }}</li>
-                        {% endfor %}
+                            {% endfor %}
                         </ul>
-                    {% else %}
+                        {% else %}
                         <div class="alert alert-info">You don't have any categories yet.</div>
-                    {% endif %}
+                        {% endif %}
                     </div>
-
                   </div>
                 </div>
-              </div>
-
+            </div>
         </div>
 
       </div>
