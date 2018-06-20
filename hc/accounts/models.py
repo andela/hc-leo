@@ -87,3 +87,10 @@ class Profile(models.Model):
 class Member(models.Model):
     team = models.ForeignKey(Profile)
     user = models.ForeignKey(User)
+    priority = models.CharField(max_length=10, default="low")
+
+    @staticmethod
+    def is_alerted(check):
+        if check.prev_alert_status == check.status and check.alert_sent:
+            return True
+        return False
