@@ -9,6 +9,10 @@
         The check <strong>{{ check.name_then_code }}</strong>
         is running too often. It pinged before the specified
         period was over.
+    {% elif check.nag_status %}
+        Your check <strong>{{ check.name_then_code }}</strong> is still <strong>DOWN</strong>.
+        <br />
+        To stop receiving notifications kindly resolve your check.
     {% else %}
         The check <strong>{{ check.name_then_code }}</strong>
         has gone <strong>{{ check.status|upper }}</strong>.
