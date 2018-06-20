@@ -1,5 +1,8 @@
 from django.conf import settings
 from djmail.template_mail import InlineCSSTemplateMail
+from hc.lib.sms import send_sms
+from django.contrib.auth.models import User
+from smtplib import SMTPRecipientsRefused
 
 
 def send(name, to, ctx):
@@ -17,7 +20,17 @@ def set_password(to, ctx):
 
 
 def alert(to, ctx):
-    send("alert", to, ctx)
+    user = User.objects.get(email=to)
+    try:
+        if user.profile.alert_mode == "Phone":
+            to = [user.profile.phone_number]
+            Msg = "is running" if ctx['check'].status == "too often" else "is"
+            sms_body = "The check {} {} {}".format(
+                ctx['check'].name_then_code(), Msg, ctx['check'].status)
+            send_sms(to, sms_body)
+        send("alert", to, ctx)
+    except SMTPRecipientsRefused:
+        return "okay"
 
 
 def verify_email(to, ctx):
