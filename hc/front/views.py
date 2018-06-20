@@ -30,8 +30,15 @@ def pairwise(iterable):
 
 @login_required
 def my_checks(request):
-    q = Check.objects.filter(user=request.team.user).order_by("created")
-    checks = list(q)
+    if request.team == request.user.profile:
+        q = Check.objects.filter(user=request.team.user).order_by("created")
+        checks = list(q)
+    else:
+        q = Check.objects.filter(
+            user=request.team.user,
+            membership_access_allowed=True,
+            member=request.user.id).order_by("created")
+        checks = list(q)
 
     counter = Counter()
     down_tags, grace_tags, often_tags = set(), set(), set()
@@ -66,8 +73,15 @@ def my_checks(request):
 
 
 def get_failing_checks(request):
-    q = Check.objects.filter(user=request.team.user).order_by("created")
-    checks = list(q)
+    if request.team == request.user.profile:
+        q = Check.objects.filter(user=request.team.user).order_by("created")
+        checks = list(q)
+    else:
+        q = Check.objects.filter(
+            user=request.team.user,
+            membership_access_allowed=True,
+            member=request.user.id).order_by("created")
+        checks = list(q)
     failing_checks = [check for check in checks if check.get_status() == "down"]
     return failing_checks, len(failing_checks)
 
@@ -323,6 +337,7 @@ def update_timeout(request, code):
     if form.is_valid():
         check.timeout = td(seconds=form.cleaned_data["timeout"])
         check.grace = td(seconds=form.cleaned_data["grace"])
+        check.nagging_interval = td(seconds=form.cleaned_data["nagging_interval"])
         check.save()
 
     return redirect("hc-checks")
