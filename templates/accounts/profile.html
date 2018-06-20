@@ -196,7 +196,8 @@
             <div class="panel-body settings-block">
                 <form method="post" id="alert_mode_form">
                     {% csrf_token %}
-                    <h2>Alerts Checkbox</h2>
+                    <h2>Alerts Checkbox</h2> 
+                    <p> Select the method perfered to receive the alerts.</p>
                     <label class="radiobtn">
                         <input
                             name="alert_mode"
@@ -205,6 +206,7 @@
                             {% if profile.alert_mode == "Email" %} checked {% endif %}>
                         Email
                     </label>
+                    <br>
                     <label class="radiobtn">
                         <input
                             name="alert_mode"
