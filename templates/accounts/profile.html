@@ -108,10 +108,50 @@
                             <td>{{ member.user.email }} </td>
                             <td>Member</td>
                             <td>
-                                <a
-                                    href="#"
-                                    data-email="{{ member.user.email }}"
-                                    class="pull-right member-remove">Remove</a>
+                                <div class="dropup">
+                                    <button
+                                            class="btn btn-default dropdown-toggle"
+                                            type="button"
+                                            id="dropdownMenuButton"
+                                            data-toggle="dropdown"
+                                            aria-haspopup="true"
+                                            aria-expanded="false">Priority
+                                    </button>
+                                    <div class="dropdown-menu">
+                                        <form  method="post">
+                                        {% csrf_token %}
+                                            <input type="hidden" name="member_email" value="{{ member.user.email }}" />
+                                            <div class="radio" style="padding-left: 10px;">
+                                                <label>
+                                                    <input type="radio" name="priority" value="high"
+                                                    {% if member.priority == "high" %} checked
+                                                    {% endif %}>
+                                                    High
+                                                </label>
+                                            </div>
+                                            <div class="radio" style="padding-left: 10px;">
+                                                <label>
+                                                    <input type="radio" name="priority" value="low"
+                                                    {% if member.priority == "low" %} checked
+                                                    {% endif %}>
+                                                    Low
+                                                </label>
+                                            </div>
+                                            <div style="padding-left: 10px;">
+                                            <button
+                                                name="set_notification_priority"
+                                                type="submit"
+                                                class="btn btn-default">Save</button>
+                                                </div>
+                                        </form>
+                                       </div>
+                                    </div>
+                            </td>
+                            <td>
+                                <a href="#"
+                                   data-email="{{ member.user.email }}"
+                                   style="color: #d9534f;"
+                                   class="member-remove">Remove</a>
                             </td>
                         </tr>
                         {% endfor %}
