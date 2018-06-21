@@ -12,15 +12,15 @@ class BlogTestCase(BaseTestCase):
         self.assertContains(r, "You don\'t have any posts yet.")
 
     def test_create_blog_post(self):
-        cat = Category(name="technology")
-        cat.save()
+        Category(name="technology").save()
+        id = Category.objects.first().id
         self.client.login(username="alice@example.org", password="password")
 
         initial_blog_count = Blog.objects.count()
         form = {
             "title": "this is a title",
             "body": "this is a body",
-            "category": 2
+            "category": id
         }
 
         abc = AddBlogPostForm(form)
