@@ -81,10 +81,14 @@ class Command(BaseCommand):
         """Send notification to members in a team depending on their priority"""
 
         team = Member.objects.filter(team=check.user.profile).order_by("priority")
+        high_priority = [member for member in team if member.priority == "high"]
+        not_alerted = [mem for mem in high_priority if not mem.is_alerted(check)]
         for member in team:
-            if member.priority == "high" and not member.is_alerted(check):
+            if member in not_alerted:
                 self.notify(check, member.user.email)
-            elif member.priority == "low" and not member.is_alerted(check):
+            elif member.priority == "low" and not not_alerted:
+                self.notify(check, member.user.email)
+            elif member.priority == "high" and not not_alerted and check.nag_status:
                 self.notify(check, member.user.email)
         return True
 
