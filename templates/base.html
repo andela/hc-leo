@@ -30,6 +30,8 @@
     <link rel="stylesheet" href="{% static 'css/add_pushover.css' %}" type="text/css">
     <link rel="stylesheet" href="{% static 'css/settings.css' %}" type="text/css">
     <link rel="stylesheet" href="{% static 'css/intlTelInput.min.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'css/faq.css' %}" type="text/css">
+
     {% endcompress %}
 </head>
 <body class="page-{{ page }}">
@@ -106,6 +108,10 @@
 
                 <li {% if page == 'about' %} class="active" {% endif %}>
                     <a href="{% url 'hc-about' %}">About</a>
+                </li>
+
+                <li {% if page == 'faq' %} class="active" {% endif %}>
+                    <a href="{% url 'hc-faq' %}">FAQ</a>
                 </li>
             </ul>
 

@@ -74,7 +74,7 @@ class Profile(models.Model):
 
         emails.report(self.user.email, ctx)
 
-    def invite(self, user):
+    def invite(self, user, check):
         member = Member(team=self, user=user)
         member.save()
 
@@ -82,6 +82,10 @@ class Profile(models.Model):
         # notice the new team on next visit:
         user.profile.current_team = self
         user.profile.save()
+
+        check.membership_access_allowed = True
+        check.member = int(user.id)
+        check.save()
 
         user.profile.send_instant_login_link(self)
 
