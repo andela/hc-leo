@@ -13,18 +13,19 @@ class BlogTestCase(BaseTestCase):
 
     def test_create_blog_post(self):
         Category(name="technology").save()
-        id = Category.objects.first().id
+        cat = Category.objects.first()
         self.client.login(username="alice@example.org", password="password")
 
         initial_blog_count = Blog.objects.count()
         form = {
             "title": "this is a title",
-            "body": "this is a body",
-            "category": id
+            "body": "this is a body"
         }
 
-        abc = AddBlogPostForm(form)
-        abc.save()
+        Blog(title=form['title'],
+             body=form['body'],
+             category=cat,
+             user=self.alice).save()
 
         blog_count = Blog.objects.count()
 
