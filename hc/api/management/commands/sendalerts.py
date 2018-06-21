@@ -26,6 +26,7 @@ class Command(BaseCommand):
         going_up = query.filter(alert_after__gt=now, status="down")
         nag_on = query.filter(next_nagging__lt=now, nag_status=True, status="down")
         # Don't combine this in one query so Postgres can query using index:
+        
         checks = list(going_down_from_up.iterator()) + list(going_up.iterator()) + \
             list(going_down_from_often.iterator()) + list(nag_on.iterator())
 

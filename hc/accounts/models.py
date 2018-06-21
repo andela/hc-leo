@@ -25,6 +25,8 @@ class Profile(models.Model):
     token = models.CharField(max_length=128, blank=True)
     api_key = models.CharField(max_length=128, blank=True)
     current_team = models.ForeignKey("self", null=True)
+    alert_mode = models.CharField(max_length=200, default="Email")
+    phone_number = models.CharField(max_length=200, null=True)
 
     def __str__(self):
         return self.team_name or self.user.email
