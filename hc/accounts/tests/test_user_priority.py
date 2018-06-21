@@ -53,13 +53,3 @@ class UserPriorityTestCase(BaseTestCase):
         # assert for two emails because one is an invitation email
         self.assertEqual(len(mail.outbox), 2)
         self.assertNotIn("bob@example.org", mail.outbox)
-
-
-
-
-
-
-
-
-
-
