@@ -91,6 +91,6 @@ class Member(models.Model):
 
     @staticmethod
     def is_alerted(check):
-        if check.prev_alert_status == check.status and check.alert_sent:
+        if check.alert_sent:
             return True
         return False
