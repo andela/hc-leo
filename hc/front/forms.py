@@ -1,5 +1,6 @@
 from django import forms
 from hc.api.models import Channel
+from .models import Category, Blog
 
 
 class NameTagsForm(forms.Form):
@@ -42,3 +43,22 @@ class AddWebhookForm(forms.Form):
 
     def get_value(self):
         return "{value_down}\n{value_up}".format(**self.cleaned_data)
+
+
+class AddBlogPostForm(forms.Form):
+    title = forms.CharField(max_length=100, required=True)
+    body = forms.CharField(max_length=500, required=True)
+    category = forms.CharField(max_length=50, required=True)
+
+
+class CreateCategoryForm(forms.ModelForm):
+    '''form to cater for the creation of a category for a blog'''
+    class Meta:
+        model = Category
+        fields = ['name']
+
+class AddBlogPostForm(forms.ModelForm):
+    '''Form to cater to the creation of Blog entires'''
+    class Meta:
+        model = Blog
+        fields = ['title', 'body', 'category']
