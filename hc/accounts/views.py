@@ -13,7 +13,9 @@ from django.http import HttpResponseForbidden, HttpResponseBadRequest
 from django.shortcuts import redirect, render
 from hc.accounts.forms import (EmailPasswordForm, InviteTeamMemberForm,
                                RemoveTeamMemberForm, ReportSettingsForm,
-                               SetPasswordForm, TeamNameForm, AlertForm)
+                               SetPasswordForm, TeamNameForm, AlertForm,
+                               SetPriorityForm)
+
 from hc.accounts.models import Profile, Member
 from hc.api.models import Channel, Check
 from hc.lib.badges import get_badge_url
@@ -215,6 +217,19 @@ def profile(request):
                 profile.save()
                 profile.refresh_from_db()
                 messages.success(request, "Alert mode updated!")
+
+        elif "set_notification_priority" in request.POST:
+            if not profile.team_access_allowed:
+                return HttpResponseForbidden()
+
+            form = SetPriorityForm(request.POST)
+            if form.is_valid():
+                member_email = form.cleaned_data["member_email"]
+                user = User.objects.get(email=member_email)
+                priority = form.cleaned_data["priority"]
+                member = Member.objects.filter(user=user).first()
+                member.priority = priority
+                member.save()
 
     tags = set()
     for check in Check.objects.filter(user=request.team.user):
