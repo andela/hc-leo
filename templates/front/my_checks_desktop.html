@@ -24,6 +24,11 @@
                 <span class="status icon-grace"></span>
             {% elif check.get_status == "up" %}
                 <span class="status icon-up"></span>
+            {% elif check.get_status == "often" %}
+                <span class="status icon-up often" 
+                    data-toggle="tooltip" title="Too often. Ping ran too early"></span>
+            {% elif check.in_nag_period == "nag" and check.get_status == "down" %}
+                <span class="status icon-nagging"></span>
             {% elif check.get_status == "down" %}
                 <span class="status icon-down"></span>
             {% endif %}
@@ -54,11 +59,15 @@
                 data-url="{% url 'hc-update-timeout' check.code %}"
                 data-timeout="{{ check.timeout.total_seconds }}"
                 data-grace="{{ check.grace.total_seconds }}"
+                data-nagging="{{ check.nagging_interval.total_seconds }}"
                 class="timeout-grace">
                 {{ check.timeout|hc_duration }}
                 <br />
                 <span class="checks-subline">
                 {{ check.grace|hc_duration }}
+                </span>
+                <span class="checks-subline">
+                {{ check.nagging_interval|hc_duration }}
                 </span>
             </span>
         </td>

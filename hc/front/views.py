@@ -15,8 +15,9 @@ from django.utils.crypto import get_random_string
 from django.utils.six.moves.urllib.parse import urlencode
 from hc.api.decorators import uuid_or_400
 from hc.api.models import DEFAULT_GRACE, DEFAULT_TIMEOUT, Channel, Check, Ping
+from .models import Category, Blog
 from hc.front.forms import (AddChannelForm, AddWebhookForm, NameTagsForm,
-                            TimeoutForm)
+                            TimeoutForm, AddBlogPostForm, CreateCategoryForm)
 
 
 # from itertools recipes:
@@ -29,11 +30,18 @@ def pairwise(iterable):
 
 @login_required
 def my_checks(request):
-    q = Check.objects.filter(user=request.team.user).order_by("created")
-    checks = list(q)
+    if request.team == request.user.profile:
+        q = Check.objects.filter(user=request.team.user).order_by("created")
+        checks = list(q)
+    else:
+        q = Check.objects.filter(
+            user=request.team.user,
+            membership_access_allowed=True,
+            member=request.user.id).order_by("created")
+        checks = list(q)
 
     counter = Counter()
-    down_tags, grace_tags = set(), set()
+    down_tags, grace_tags, often_tags = set(), set(), set()
     for check in checks:
         status = check.get_status()
         for tag in check.tags_list():
@@ -44,6 +52,8 @@ def my_checks(request):
 
             if status == "down":
                 down_tags.add(tag)
+            elif status == "often":
+                often_tags.add(tag)
             elif check.in_grace_period():
                 grace_tags.add(tag)
 
@@ -54,10 +64,52 @@ def my_checks(request):
         "tags": counter.most_common(),
         "down_tags": down_tags,
         "grace_tags": grace_tags,
-        "ping_endpoint": settings.PING_ENDPOINT
+        "often_tags": often_tags,
+        "ping_endpoint": settings.PING_ENDPOINT,
+        "failing_count": get_failing_checks(request)[1]
     }
 
     return render(request, "front/my_checks.html", ctx)
+
+
+def get_failing_checks(request):
+    if request.team == request.user.profile:
+        q = Check.objects.filter(user=request.team.user).order_by("created")
+        checks = list(q)
+    else:
+        q = Check.objects.filter(
+            user=request.team.user,
+            membership_access_allowed=True,
+            member=request.user.id).order_by("created")
+        checks = list(q)
+    failing_checks = [check for check in checks if check.get_status() == "down"]
+    return failing_checks, len(failing_checks)
+
+
+@login_required
+def unresolved(request):
+    counter = Counter()
+    down_tags = set()
+    failing_checks = get_failing_checks(request)[0]
+    for check in failing_checks:
+        for tag in check.tags_list():
+            if tag == "":
+                continue
+
+            counter[tag] += 1
+            down_tags.add(tag)
+
+    ctx = {
+        "page": "unresolved",
+        "checks": failing_checks,
+        "failing_count": len(failing_checks),
+        "now": timezone.now(),
+        "tags": counter.most_common(),
+        "down_tags": down_tags,
+        "ping_endpoint": settings.PING_ENDPOINT
+    }
+
+    return render(request, "front/unresolved.html", ctx)
 
 
 def _welcome_check(request):
@@ -101,6 +153,9 @@ def docs(request):
         "ping_url": check.url()
     }
 
+    if request.user.is_authenticated:
+        ctx['failing_count'] = get_failing_checks(request)[1]
+
     return render(request, "front/docs.html", ctx)
 
 
@@ -118,7 +173,125 @@ def docs_api(request):
 
 
 def about(request):
-    return render(request, "front/about.html", {"page": "about"})
+    ctx = {
+        "page": "about"
+    }
+    if request.user.is_authenticated:
+        ctx['failing_count'] = get_failing_checks(request)[1]
+
+    return render(request, "front/about.html", ctx)
+
+
+def blog(request):
+    blogs = Blog.objects.order_by('-published')
+    categories = Category.objects.all()
+
+    ctx = {
+        "page": "blog",
+        "blogs": blogs,
+        "categories": categories
+    }
+
+    if request.user.is_authenticated:
+        ctx['failing_count'] = get_failing_checks(request)[1]
+
+    return render(request, "front/blog.html", ctx)
+
+
+@login_required
+def add_blogpost(request):
+    '''
+    Method to show form to create a new blog post
+    :param request:
+    :return:
+    '''
+    categories = Category.objects.all()
+
+    ctx = {
+        "page": "add_blogpost",
+        "categories": categories
+    }
+    if request.user.is_authenticated:
+        ctx['failing_count'] = get_failing_checks(request)[1]
+
+    return render(request, "front/add_blogpost.html", ctx)
+
+
+@login_required
+def create_blog(request):
+    '''
+     Method to create a blog
+    :param request:
+    :return:
+    '''
+    categoryForm = CreateCategoryForm(request.POST)
+    blogForm = AddBlogPostForm(request.POST)
+
+    if categoryForm.is_bound and categoryForm.is_valid():
+        name = categoryForm.cleaned_data['name']
+        cat = Category(name=name)
+        cat.save()
+        return redirect("hc-create-blogpost")
+
+    elif blogForm.is_bound and blogForm.is_valid():
+        title = blogForm.cleaned_data['title']
+        category = blogForm.cleaned_data['category']
+        body = blogForm.cleaned_data['body']
+        published = timezone.now()
+        user = request.user
+        blog = Blog(title=title, body=body, published=published, category=category, user=user)
+        blog.save()
+        return redirect("hc-blog")
+
+    return render(request, "front/add_blogpost.html", {'form': categoryForm, 'form1': blogForm})
+
+
+def read_blog(request, pk):
+    '''
+    Method to read a particular blog
+    '''
+    blog = Blog.objects.get(pk=int(pk))
+    return render(request, "front/read_blog.html", {'blog': blog})
+
+
+@login_required
+def delete_blog(request, pk):
+    '''
+    Method to delete an existing blog
+    :param request:
+    :param pk:
+    :return:
+    '''
+    blog_to_delete = Blog.objects.get(pk=int(pk))
+    blog_to_delete.delete()
+    return redirect("hc-blog")
+
+
+@login_required
+def edit_blog(request, pk):
+    '''
+    Method to edit a particular blog
+    :param request:
+    :param pk:
+    :return:
+    '''
+    blog = Blog.objects.get(pk=int(pk))
+    categories = Category.objects.all()
+
+    if request.method == "GET":
+        form = AddBlogPostForm()
+        return render(request, "front/edit_blogpost.html", {'blog': blog, 'categories': categories, 'form': form})
+
+    elif request.method == "POST":
+        form = AddBlogPostForm(request.POST)
+        if form.is_valid():
+            blog.title = form.cleaned_data['title']
+            blog.body = form.cleaned_data['body']
+            blog.category = form.cleaned_data['category']
+            blog.save()
+            return redirect("hc-blog")
+
+    return render(request, "front/edit_blogpost.html", {'blog': blog, 'categories': categories, 'form': form})
 
 
 @login_required
@@ -164,6 +337,7 @@ def update_timeout(request, code):
     if form.is_valid():
         check.timeout = td(seconds=form.cleaned_data["timeout"])
         check.grace = td(seconds=form.cleaned_data["grace"])
+        check.nagging_interval = td(seconds=form.cleaned_data["nagging_interval"])
         check.save()
 
     return redirect("hc-checks")
@@ -286,7 +460,8 @@ def channels(request):
         "channels": channels,
         "num_checks": num_checks,
         "enable_pushbullet": settings.PUSHBULLET_CLIENT_ID is not None,
-        "enable_pushover": settings.PUSHOVER_API_TOKEN is not None
+        "enable_pushover": settings.PUSHOVER_API_TOKEN is not None,
+        "failing_count": get_failing_checks(request)[1]
     }
     return render(request, "front/channels.html", ctx)
 

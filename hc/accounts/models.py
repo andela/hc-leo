@@ -20,10 +20,13 @@ class Profile(models.Model):
     team_access_allowed = models.BooleanField(default=False)
     next_report_date = models.DateTimeField(null=True, blank=True)
     reports_allowed = models.BooleanField(default=True)
+    reports_period = models.IntegerField(default=30)
     ping_log_limit = models.IntegerField(default=100)
     token = models.CharField(max_length=128, blank=True)
     api_key = models.CharField(max_length=128, blank=True)
     current_team = models.ForeignKey("self", null=True)
+    alert_mode = models.CharField(max_length=200, default="Email")
+    phone_number = models.CharField(max_length=200, null=True)
 
     def __str__(self):
         return self.team_name or self.user.email
@@ -56,7 +59,7 @@ class Profile(models.Model):
     def send_report(self):
         # reset next report date first:
         now = timezone.now()
-        self.next_report_date = now + timedelta(days=30)
+        self.next_report_date = now + timedelta(self.reports_period)
         self.save()
 
         token = signing.Signer().sign(uuid.uuid4())
@@ -71,7 +74,7 @@ class Profile(models.Model):
 
         emails.report(self.user.email, ctx)
 
-    def invite(self, user):
+    def invite(self, user, check):
         member = Member(team=self, user=user)
         member.save()
 
@@ -80,9 +83,20 @@ class Profile(models.Model):
         user.profile.current_team = self
         user.profile.save()
 
+        check.membership_access_allowed = True
+        check.member = int(user.id)
+        check.save()
+
         user.profile.send_instant_login_link(self)
 
 
 class Member(models.Model):
     team = models.ForeignKey(Profile)
     user = models.ForeignKey(User)
+    priority = models.CharField(max_length=10, default="low")
+
+    @staticmethod
+    def is_alerted(check):
+        if check.alert_sent:
+            return True
+        return False

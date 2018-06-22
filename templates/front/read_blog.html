@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+{% block title %}Blog - healthchecks.io{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-sm-12">
+        <!--<h2>Blog</h2>-->
+        <div class="page-header">
+            {% if user.is_authenticated %}
+            <div class='btn-toolbar pull-right'>
+                <a class="btn btn-primary" href="{% url 'hc-create-blogpost' %}">
+                    Create a Post
+                </a>
+                {% if request.user == blog.user%}
+                <a href="{% url 'hc-delete_blog' blog.id %}" class="btn btn-danger">Delete</a>
+                <a href="{% url 'hc-edit_blog' blog.id %}" class="btn btn-default">Edit</a>
+                {% endif %}
+            </div>
+            {% endif %}
+            <h1>Healthchecks Blog</h1>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+
+      <div class="row">
+        <!-- Blog Entries Column -->
+        <div class="col-md-12">
+            <!-- Blog Post -->
+            {% if blog %}
+            <div class="blog-post">
+                <h2 class="blog-post-title">{{ blog.title }}</h2>
+                <p class="blog-post-meta text-muted">Posted on <span class="text-primary">{{ blog.published }}</span> by <span class="text-primary">{{ blog.user }}</span></p>
+                <p class="blog-post-meta text-muted">Category: <span class="text-primary">{{ blog.category }}</span></p>
+                <!--<p class="blog-post-meta text-muted">Author: <span class="text-primary">{{ blog.user }}</span></p>-->
+            <p>{{ blog.body|safe }}</p>
+          </div>
+            {% else %}
+            <div class="alert alert-info">This post could not be found</div>
+            {% endif %}
+        </div>
+
+      </div>
+      <!-- /.row -->
+
+    </div>
+{% endblock %}

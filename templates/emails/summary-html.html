@@ -30,6 +30,8 @@
     .up { background: #5cb85c; }
     .grace { background: #f0ad4e; }
     .down { background: #d9534f; }
+    .often { background: #b1b816; }
+    .nag { background:#4e6cf0; }
 
 
     .unnamed {
@@ -63,8 +65,12 @@
                 <span class="badge grace">LATE</span>
             {% elif check.get_status == "up" %}
                 <span class="badge up">UP</span>
+            {% elif check.in_nag_period == "nag" and check.get_status == "down" %}
+                <span class="badge nag">Nagging</span>
             {% elif check.get_status == "down" %}
                 <span class="badge down">DOWN</span>
+            {% elif check.get_status == "often" %}
+                <span class="badge often">TOO OFTEN</span>
             {% endif %}
         </td>
         <td>

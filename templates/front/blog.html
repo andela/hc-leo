@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+{% block title %}Blog - healthchecks.io{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-sm-12">
+        <!--<h2>Blog</h2>-->
+        <div class="page-header">
+            {% if user.is_authenticated %}
+            <div class='btn-toolbar pull-right'>
+                <a class="btn btn-primary" href="{% url 'hc-create-blogpost' %}">
+                    Create a Post
+                </a>
+            </div>
+            <h1>Healthchecks Blog</h1>
+
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<div class="container">
+
+      <div class="row">
+
+        <!-- Blog Entries Column -->
+        <div class="col-md-12">
+            <!-- Blog Post -->
+            {% if blogs %}
+            <div class="blog-post">
+                {% for blog in blogs %}
+                <h2 class="blog-post-title">{{ blog.title }}</h2>
+                <p class="blog-post-meta text-muted">Posted on <span class="text-primary">{{ blog.published }}</span> by <span class="text-primary">{{ blog.user }}</span></p>
+            <p>{{ blog.body|safe|truncatechars:300 }}</p>
+            <a href="{% url 'hc-read_blog' blog.id %}" class="btn btn-primary">Read more &rsaquo;</a>
+                <hr>
+                {% endfor %}
+          </div>
+            {% else %}
+            <div class="alert alert-info">You don't have any posts yet.</div>
+            {% endif %}
+        </div>
+
+      </div>
+      <!-- /.row -->
+
+    </div>
+{% endblock %}
+

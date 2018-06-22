@@ -13,7 +13,9 @@ from django.http import HttpResponseForbidden, HttpResponseBadRequest
 from django.shortcuts import redirect, render
 from hc.accounts.forms import (EmailPasswordForm, InviteTeamMemberForm,
                                RemoveTeamMemberForm, ReportSettingsForm,
-                               SetPasswordForm, TeamNameForm)
+                               SetPasswordForm, TeamNameForm, AlertForm,
+                               SetPriorityForm)
+
 from hc.accounts.models import Profile, Member
 from hc.api.models import Channel, Check
 from hc.lib.badges import get_badge_url
@@ -138,6 +140,9 @@ def profile(request):
         profile.current_team_id = profile.id
         profile.save()
 
+    checks = Check.objects.filter(user=request.user).order_by("created")
+    check_list = list(checks)
+
     show_api_key = False
     if request.method == "POST":
         if "set_password" in request.POST:
@@ -156,9 +161,14 @@ def profile(request):
         elif "update_reports_allowed" in request.POST:
             form = ReportSettingsForm(request.POST)
             if form.is_valid():
-                profile.reports_allowed = form.cleaned_data["reports_allowed"]
+                is_reports_allowed = form.cleaned_data["reports_allowed"]
+                checked_report_period = form.cleaned_data["report_period"]
+                profile.reports_allowed = is_reports_allowed
+                profile.reports_period = checked_report_period
                 profile.save()
-                messages.success(request, "Your settings have been updated!")
+                if is_reports_allowed and checked_report_period == 0:
+                    profile.send_report()
+                messages.success(request, "Your settings have been updated !")
         elif "invite_team_member" in request.POST:
             if not profile.team_access_allowed:
                 return HttpResponseForbidden()
@@ -167,12 +177,14 @@ def profile(request):
             if form.is_valid():
 
                 email = form.cleaned_data["email"]
+                check = form.cleaned_data["check"]
                 try:
                     user = User.objects.get(email=email)
                 except User.DoesNotExist:
                     user = _make_user(email)
 
-                profile.invite(user)
+                assigned_check = Check.objects.get(name=check)
+                profile.invite(user, assigned_check)
                 messages.success(request, "Invitation to %s sent!" % email)
         elif "remove_team_member" in request.POST:
             form = RemoveTeamMemberForm(request.POST)
@@ -196,6 +208,28 @@ def profile(request):
                 profile.team_name = form.cleaned_data["team_name"]
                 profile.save()
                 messages.success(request, "Team Name updated!")
+        elif "update_alert_mode" in request.POST:
+
+            form = AlertForm(request.POST)
+            if form.is_valid():
+                profile.phone_number = form.cleaned_data["phone_number"]
+                profile.alert_mode = form.cleaned_data["alert_mode"]
+                profile.save()
+                profile.refresh_from_db()
+                messages.success(request, "Alert mode updated!")
+
+        elif "set_notification_priority" in request.POST:
+            if not profile.team_access_allowed:
+                return HttpResponseForbidden()
+
+            form = SetPriorityForm(request.POST)
+            if form.is_valid():
+                member_email = form.cleaned_data["member_email"]
+                user = User.objects.get(email=member_email)
+                priority = form.cleaned_data["priority"]
+                member = Member.objects.filter(user=user).first()
+                member.priority = priority
+                member.save()
 
     tags = set()
     for check in Check.objects.filter(user=request.team.user):
@@ -211,6 +245,7 @@ def profile(request):
 
     ctx = {
         "page": "profile",
+        "checks": check_list,
         "badge_urls": badge_urls,
         "profile": profile,
         "show_api_key": show_api_key
